@@ -3,15 +3,15 @@ s3_server:
   buckets:
     - mean: 3
       std: 1
-      total_files: 10000
+      total_files: 1000
       name: 'Saxophone'
     - mean: 5
       std: 0.8
-      total_files: 20000
+      total_files: 2000
       name: 'Clarinet'
     - mean: 1
       std: 0.1
-      total_files: 30000
+      total_files: 3000
       name: 'Drums'
 
 

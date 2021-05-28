@@ -33,12 +33,17 @@ def get_config():
 
 
 def make_buckets(source_config):
+    """
+    create and return the full of each bucket
+    """
     CURRENT_DIRECTORY  = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
-    all_folders = [CURRENT_DIRECTORY + "/dataset/" + source_config['s3_server']['name'] + "/" + i['name'] for i in source_config['s3_server']['buckets']]
+    all_folders = {i['name']:CURRENT_DIRECTORY + "/dataset/" + source_config['s3_server']['name'] + "/" + i['name'] for i in source_config['s3_server']['buckets']}
 
     for folder in all_folders:
         pathlib.Path(folder).mkdir(parents=True, exist_ok=True) 
+
+    return all_folders
 
 def generate_SSN():
     # format of SSN is 000-00-0000
@@ -56,10 +61,12 @@ def generate_occurence_count(mean, std):
         yield np.random.normal(mean, std)
 
 
-
 def generate_documents(location,  total_files, mean, std):
     """
     generate new documents based on above configuration parameters"""
+    
+    if location[-1] != '/':
+        location = location + '/'
     
     s=get_sample_data()
     occurence_generator = generate_occurence_count(mean,std)
@@ -84,12 +91,29 @@ def generate_documents(location,  total_files, mean, std):
 
 
 
+
+
 def main():
 
     source_config = get_config()
 
-    make_buckets(source_config)
+    all_buckets = make_buckets(source_config)
 
+    for bucket in source_config['s3_server']['buckets']:
+        mean = bucket['mean']
+        std = bucket['std']
+        total_files = bucket['total_files']
+        name = bucket['name']
+        location = all_buckets[name]
+        print(mean, std, total_files, name, location)
+        generate_documents(location, total_files, mean, std)
+
+
+    print(".......", "data generation Succesfully ","..............")
+
+
+if __name__ == '__main__':
+    main()
 
 
 
