@@ -1,9 +1,10 @@
 
 import random
 import yaml
-
+import string
 import pathlib
 import os, inspect
+import numpy as np
 
 
 def get_sample_data():
@@ -39,6 +40,48 @@ def make_buckets(source_config):
     for folder in all_folders:
         pathlib.Path(folder).mkdir(parents=True, exist_ok=True) 
 
+def generate_SSN():
+    # format of SSN is 000-00-0000
+    p1 = "".join(random.choices(string.digits, k=3 ))
+    p2 = "".join(random.choices(string.digits, k=2 ))
+    p3 = "".join(random.choices(string.digits, k=4 ))
+    return "-".join([p1,p2,p3])
+
+def generate_occurence_count(mean, std):
+    """
+    generate data which is sampled from a normal distribution with mean mean and
+    standard deviation std
+    """
+    while True:
+        yield np.random.normal(mean, std)
+
+
+
+def generate_documents(location,  total_files, mean, std):
+    """
+    generate new documents based on above configuration parameters"""
+    
+    s=get_sample_data()
+    occurence_generator = generate_occurence_count(mean,std)
+    
+    for i in range(total_files):
+
+        with open(location +"document_"+ str(i)+".txt",'w+') as f:
+            f.write(next(s))
+            f.write('\n')
+            occurence = next(occurence_generator)
+            o=0
+            while o < occurence:
+                o = o +1
+                f.write(generate_SSN())
+                f.write('\n')
+                f.write(next(s))
+                f.write('\n')
+
+    print("Succesfully created " , total_files, " text files in location ", location )
+
+
+
 
 
 def main():
@@ -46,7 +89,7 @@ def main():
     source_config = get_config()
 
     make_buckets(source_config)
-    
+
 
 
 
