@@ -38,8 +38,9 @@ we already have curated training data in training_data.csv
 
 ## sample data and generate stats for each Bucket. 
 
-`python3 risk_assessment.py`
+`python3 risk_assessment.py  --<classification_model_type>`
 
+classification_model_type = nlp or regex
 
 - aggregated results are printed.
 - individual results are stored in result.json in results folder. 

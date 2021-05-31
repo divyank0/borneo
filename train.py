@@ -46,6 +46,7 @@ def main():
 	X = [build_features(i) for i in X]
 	Y = [i.strip()[-1] for i in data[1:]]
 
+	print(" total data availabel is ", len(X))
 
 	Xtrain, Xtest, ytrain, ytest = train_test_split(X, Y)
 

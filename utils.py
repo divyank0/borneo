@@ -17,7 +17,7 @@ import nltk
 nltk.download('punkt')
 
 import re
-
+import pickle
 
 
 
@@ -102,4 +102,4 @@ def predict_token(text, threshold=0.70):
 
 	return data
 
-	
+

@@ -16,6 +16,9 @@ import random
 import numpy as np
 import json
 import pathlib
+import sys
+
+import utils
 
 
 CURRENT_DIRECTORY  = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -24,6 +27,16 @@ database_location = os.path.join(CURRENT_DIRECTORY, 'dataset', database_name)
 RESULT_DIRECTORY = "results"
 
 
+
+"""
+
+NOTE: curerntly our sampling and document parsing is decoupled... 
+that is we parse all the document to find relevant occurence. 
+and then sample which occurences to take. 
+
+It was just easier implementation. 
+
+"""
 
 
 def PII_detection_model(bucket_name, database_location):
@@ -41,6 +54,21 @@ def PII_detection_model(bucket_name, database_location):
                      stdout=f)
 
 
+def NLP_based_PII_detection_model(bucket_name, database_location):
+
+
+
+	source_folder= os.path.join(database_location, bucket_name,"")
+
+	files = list(os.walk(source_folder))[0][2]
+	output_file = os.path.join(CURRENT_DIRECTORY, RESULT_DIRECTORY, bucket_name +'.txt')
+
+	with open(output_file,'w+') as outfile:
+		for file in files:
+			with open(os.path.join(source_folder, file), 'r') as f:
+				data = f.read()
+				matching_tokens = utils.predict_token(data, threshold  = 0.7)
+			outfile.write(  str(len(matching_tokens) )+ '\n')
 
 def sample_model(bucket_name, sampling_percentage=10):
 
@@ -104,14 +132,22 @@ def aggregate_results(data):
 	        ))
 	return result
 
-def main():
+def main(model_type):
 
 	pathlib.Path('results').mkdir()
 
 	# generated invidual stats for each document
 	buckets = next(os.walk(database_location))[1]
 	for bucket in buckets:
-		PII_detection_model(bucket, database_location)
+
+		print( "running data classifcation through bucket : " , bucket)
+
+		if model_type=='regex':
+			PII_detection_model(bucket, database_location)
+		elif model_type=='nlp':
+			NLP_based_PII_detection_model(bucket, database_location)
+		else:
+			raise ValueError("invalid model_type. pass an argument with python script  options = nlp/ regex")
 
 	# sample the resultant document and generate aggrgate results
 	individual_aggregates = {}
@@ -128,5 +164,6 @@ def main():
 if __name__ == '__main__':
 
 
-	main()
+	model_type = sys.argv[1]
+	main(model_type)
 
