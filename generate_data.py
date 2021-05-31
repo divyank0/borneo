@@ -40,9 +40,10 @@ def make_buckets(source_config):
 
     all_folders = {i['name']:CURRENT_DIRECTORY + "/dataset/" + source_config['s3_server']['name'] + "/" + i['name'] for i in source_config['s3_server']['buckets']}
 
-    for folder in all_folders:
-        pathlib.Path(folder).mkdir(parents=True, exist_ok=True) 
-
+    print(all_folders)
+    for folder in all_folders.values():
+        x=pathlib.Path(folder).mkdir(parents=True, exist_ok=True) 
+    
     return all_folders
 
 def generate_SSN():
