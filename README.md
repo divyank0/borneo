@@ -21,6 +21,13 @@ The aim of this repository is to Connect to S3 and build a statistical model to 
 
 
 
+## train a decision tree
+
+we already have curated training data in training_data.csv
+
+` python3 train.py`
+
+
 
 
 - a folder with 1000 documents takes around 5 MB of space. 

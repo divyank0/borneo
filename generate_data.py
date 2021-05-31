@@ -43,7 +43,7 @@ def make_buckets(source_config):
     print(all_folders)
     for folder in all_folders.values():
         x=pathlib.Path(folder).mkdir(parents=True, exist_ok=True) 
-    
+
     return all_folders
 
 def generate_SSN():
@@ -62,9 +62,12 @@ def generate_occurence_count(mean, std):
         yield np.random.normal(mean, std)
 
 
-def generate_documents(location,  total_files, mean, std):
+def generate_documents(location,  total_files, mean, std, seperator='\n'):
     """
-    generate new documents based on above configuration parameters"""
+    generate new documents based on above configuration parameters
+
+    seperator could be "" or '\n' 
+    """
     
     if location[-1] != '/':
         location = location + '/'
@@ -76,15 +79,15 @@ def generate_documents(location,  total_files, mean, std):
 
         with open(location +"document_"+ str(i)+".txt",'w+') as f:
             f.write(next(s))
-            f.write('\n')
+            f.write(seperator)
             occurence = next(occurence_generator)
             o=0
             while o < occurence:
                 o = o +1
                 f.write(generate_SSN())
-                f.write('\n')
+                f.write(seperator)
                 f.write(next(s))
-                f.write('\n')
+                f.write(seperator)
 
     print("Succesfully created " , total_files, " text files in location ", location )
 
