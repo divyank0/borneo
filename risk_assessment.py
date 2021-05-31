@@ -94,7 +94,7 @@ def aggregate_results(data):
 	}
 
 	print(""" total {aggregated_mean} occurrences of SSN detected across
-	{total_s3_buckets} S3 buckets,
+	{total_s3_buckets} S3 buckets,  and High confidence 
 	 with a {aggregated_std} of Standard deviation 
 	 based on sampling {sampling}% of data.
 	    """. format(sampling= round(sampling,3), 
